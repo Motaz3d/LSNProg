@@ -159,6 +159,18 @@ def test_منهج_يعرض_الدورة_والقيم():
     assert "نبض" in ن and "أبجدي" in ن
 
 
+def test_تقليب_بقر_وقبر():
+    from lsnprog.alphabet import متقلب
+    assert متقلب("بقر", "قبر") is True
+    assert متقلب("بقر", "كتب") is False
+
+
+def test_بقر_تقليبه_قبر_في_الشبكة():
+    ش = بناء_الشبكة()
+    أسماء = [اسم for اسم, _, _ in ش.استعلام("ما تقليب بقر")]
+    assert "بقر" in أسماء and "قبر" in أسماء
+
+
 if __name__ == "__main__":
     الاختبارات = [قيمة for اسم, قيمة in sorted(globals().items()) if اسم.startswith("test_")]
     for اختبار in الاختبارات:
