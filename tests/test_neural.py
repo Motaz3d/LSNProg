@@ -150,6 +150,15 @@ def test_شرح_يجيب_منطقياً():
     assert "الفكرة" in ن
 
 
+def test_منهج_يعرض_الدورة_والقيم():
+    from lsnprog.neural import منهج
+    ن = منهج("لماذا أنا حزين")
+    assert "١) العلاقة" in ن
+    assert "٢) الجذر" in ن
+    assert "٤) القيم" in ن
+    assert "نبض" in ن and "أبجدي" in ن
+
+
 if __name__ == "__main__":
     الاختبارات = [قيمة for اسم, قيمة in sorted(globals().items()) if اسم.startswith("test_")]
     for اختبار in الاختبارات:

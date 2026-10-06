@@ -76,6 +76,11 @@ def main(argv=None):
             print("استخدام: lsn اشرح <نص>")
             return 1
         print(neural.شرح(الباقي))
+    elif الأمر in ("منهج", "method"):
+        if not الباقي:
+            print("استخدام: lsn منهج <نص>")
+            return 1
+        print(neural.منهج(الباقي))
     elif الأمر in ("تعلم", "learn"):
         print(neural.عرض_تعلم_من_القرآن_2())
     elif الأمر in ("حركات", "harakat"):
