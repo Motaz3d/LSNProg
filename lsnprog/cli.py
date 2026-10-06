@@ -71,6 +71,11 @@ def main(argv=None):
         else:
             for اسم, قيمة, معنى in نتائج:
                 print(f"  {اسم} ({قيمة}) ← {معنى}")
+    elif الأمر in ("اشرح", "شرح", "explain"):
+        if not الباقي:
+            print("استخدام: lsn اشرح <نص>")
+            return 1
+        print(neural.شرح(الباقي))
     elif الأمر in ("تعلم", "learn"):
         print(neural.عرض_تعلم_من_القرآن_2())
     elif الأمر in ("حركات", "harakat"):

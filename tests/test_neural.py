@@ -143,6 +143,13 @@ def test_فمنهم_شقي_وسعيد_فريقان():
     assert "سعد" in أسماء          # جذر سعيد (مطابقة بالجذر)
 
 
+def test_شرح_يجيب_منطقياً():
+    from lsnprog.neural import شرح
+    ن = شرح("لماذا أنا حزين")
+    assert "حزن" in ن and "خوف" in ن
+    assert "الفكرة" in ن
+
+
 if __name__ == "__main__":
     الاختبارات = [قيمة for اسم, قيمة in sorted(globals().items()) if اسم.startswith("test_")]
     for اختبار in الاختبارات:
