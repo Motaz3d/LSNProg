@@ -171,6 +171,19 @@ def test_بقر_تقليبه_قبر_في_الشبكة():
     assert "بقر" in أسماء and "قبر" in أسماء
 
 
+def test_سردي_يجيب_بكلام_مفهوم_بلا_أرقام():
+    from lsnprog.neural import سردي
+    ن = سردي("يد الله فوق أيديهم")
+    assert "القوة" in ن and "السيطرة" in ن
+    assert "(" not in ن          # بلا أرقام تنشيط
+
+
+def test_سردي_يحلل_سؤال_غير_قرآني():
+    from lsnprog.neural import سردي
+    ن = سردي("أين أنا")
+    assert "أين" in ن and "أنا" in ن
+
+
 if __name__ == "__main__":
     الاختبارات = [قيمة for اسم, قيمة in sorted(globals().items()) if اسم.startswith("test_")]
     for اختبار in الاختبارات:

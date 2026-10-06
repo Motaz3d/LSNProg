@@ -20,9 +20,9 @@ _الصفحة = """<!DOCTYPE html>
   input { width:100%; font-size:1.1rem; padding:14px; border-radius:12px; border:1px solid #2a2f3a; background:#1a1d24; color:#fff; box-sizing:border-box; }
   button { width:100%; font-size:1.1rem; padding:14px; border-radius:12px; border:none; background:#2f6fed; color:#fff; margin-top:10px; cursor:pointer; }
   button:active { background:#2558c9; }
-  .item { background:#1a1d24; border-radius:12px; padding:12px 14px; margin-top:8px; }
-  .name { font-weight:700; }
-  .score { color:#6b8; font-size:.85rem; }
+  .narr { background:#16233a; border:1px solid #2f6fed; border-radius:12px; padding:16px; margin-top:12px; font-size:1.15rem; line-height:1.8; }
+  .item { background:#1a1d24; border-radius:12px; padding:10px 14px; margin-top:8px; }
+  .det-title { color:#889; font-size:.85rem; margin:16px 0 4px; }
   .ex { color:#8ab; cursor:pointer; text-decoration:underline; margin:4px; display:inline-block; font-size:.9rem; }
   .hint { color:#667; font-size:.85rem; text-align:center; margin-top:14px; }
 </style>
@@ -31,14 +31,14 @@ _الصفحة = """<!DOCTYPE html>
 <div class="box">
   <h1>لسن · LSN</h1>
   <div class="sub">نموذج عربي رمزي-عصبي — اسأل بالعربية</div>
-  <input id="q" placeholder="اكتب سؤالك… مثال: من يقطع فرعون" autocomplete="off" />
+  <input id="q" placeholder="اكتب سؤالك… مثال: يد الله فوق أيديهم" autocomplete="off" />
   <button onclick="اسأل()">اسأل</button>
   <div id="res"></div>
   <div class="hint">جرّب:
     <span class="ex" onclick="ضبط('من يقطع فرعون')">من يقطع فرعون</span>
     <span class="ex" onclick="ضبط('ما معنى عيسى')">ما معنى عيسى</span>
     <span class="ex" onclick="ضبط('يد الله فوق أيديهم')">يد الله فوق أيديهم</span>
-    <span class="ex" onclick="ضبط('ما هي الكاميرا')">ما هي الكاميرا</span>
+    <span class="ex" onclick="ضبط('لماذا أنا حزين')">لماذا أنا حزين</span>
     <span class="ex" onclick="ضبط('ما الفرق بين سلطان وملك')">سلطان وملك</span>
   </div>
 </div>
@@ -52,14 +52,19 @@ async function اسأل(){
   try {
     const resp = await fetch('/api?q=' + encodeURIComponent(q));
     const data = await resp.json();
-    if(!data.نتائج || data.نتائج.length === 0){
-      r.innerHTML = '<div class="item">لا نتيجة — النموذج لا يعرفها بعد.</div>';
-      return;
+    let html = '';
+    if(data.سردي){
+      html += '<div class="narr">' + data.سردي + '</div>';
     }
-    r.innerHTML = data.نتائج.map(x =>
-      '<div class="item"><span class="name">' + x.اسم + '</span> ' +
-      '<span class="score">(' + x.قيمة + ')</span><br>' + x.معنى + '</div>'
-    ).join('');
+    if(data.نتائج && data.نتائج.length > 0){
+      html += '<div class="det-title">التفاصيل:</div>';
+      html += data.نتائج.map(x =>
+        '<div class="item"><span class="name">' + x.اسم + '</span><br>' + x.معنى + '</div>'
+      ).join('');
+    } else if(!data.سردي){
+      html = '<div class="item">لا نتيجة — النموذج لا يعرفها بعد.</div>';
+    }
+    r.innerHTML = html;
   } catch(e) {
     r.innerHTML = '<div class="item">تعذّر الاتصال بالخادم.</div>';
   }
@@ -83,7 +88,10 @@ class _معالج(BaseHTTPRequestHandler):
             س = parse_qs(مسار.query).get("q", [""])[0]
             ش = neural.بناء_الشبكة()
             نتائج = ش.استعلام(س)
-            بيانات = {"نتائج": [{"اسم": ن, "قيمة": ق, "معنى": م} for ن, ق, م in نتائج]}
+            بيانات = {
+                "سردي": neural.سردي(س, ش),
+                "نتائج": [{"اسم": ن, "قيمة": ق, "معنى": م} for ن, ق, م in نتائج],
+            }
             self._أرسل(json.dumps(بيانات, ensure_ascii=False), "application/json; charset=utf-8")
         else:
             self.send_error(404)
