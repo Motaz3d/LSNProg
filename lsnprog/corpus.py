@@ -165,3 +165,34 @@ def عرض_الجيران(كلمة, عدد=10):
     for ج, ت in جيران(كلمة, عدد=عدد):
         أسطر.append(f"  {ج} ← {ت}")
     return "\n".join(أسطر)
+
+
+def فهرس_السور():
+    """كلمة ← السور (بأسمائها) التي وردت فيها — الطبقة التحليلية للسور."""
+    url = "https://api.alquran.cloud/v1/quran/quran-simple-clean"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    data = json.loads(urllib.request.urlopen(req, timeout=60).read().decode("utf-8"))
+    فهرس = collections.defaultdict(set)
+    for سورة in data["data"]["surahs"]:
+        اسم = سورة.get("name", str(سورة["number"]))
+        اسم = تطبيع_كلمة(اسم.replace("سُورَةُ", "").strip())
+        for آية in سورة["ayahs"]:
+            for كلمة in آية["text"].split():
+                فهرس[تطبيع_كلمة(كلمة)].add(اسم)
+    return {ك: sorted(س) for ك, س in فهرس.items()}
+
+
+def سور_الكلمة(كلمة):
+    """يرجع السور التي وردت فيها كلمة."""
+    return فهرس_السور().get(تطبيع_كلمة(كلمة), [])
+
+
+def عرض_سور(كلمة):
+    """يعرض السور التي وردت فيها كلمة (الطبقة التحليلية)."""
+    أسطر = [f"«{كلمة}» وردت في السور:"]
+    سور = سور_الكلمة(كلمة)
+    if سور:
+        أسطر.append("  " + " · ".join(سور))
+    else:
+        أسطر.append("  (لا ورود بهذا اللفظ)")
+    return "\n".join(أسطر)
