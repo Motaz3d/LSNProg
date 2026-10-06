@@ -142,6 +142,14 @@ def test_تعلم_القطار():
     assert "قطر" in أسماء
 
 
+def test_تعلم_من_القرآن_أمثلة_متقاربة():
+    from lsnprog.neural import عرض_تعلم_من_القرآن_2
+    ن = عرض_تعلم_من_القرآن_2()
+    assert "ثمود" in ن and "صالح" in ن
+    assert "الأرحام" in ن and "عطف" in ن
+    assert "الله" in ن
+
+
 if __name__ == "__main__":
     الاختبارات = [قيمة for اسم, قيمة in sorted(globals().items()) if اسم.startswith("test_")]
     for اختبار in الاختبارات:
