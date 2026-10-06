@@ -117,6 +117,18 @@ def test_حركات_تميز_معنى_علم():
     assert "عِلْم" in ن and "عَلَم" in ن and "عَلَّمَ" in ن
 
 
+def test_العلامات_تنوين_مد_شد():
+    from lsnprog.alphabet import العلامات
+    assert "شدة" in العلامات and "تنوين" in العلامات and "مد" in العلامات
+
+
+def test_تحليل_مكيف_الهواء():
+    from lsnprog.neural import عرض_مكيف
+    ن = عرض_مكيف()
+    assert "مكيف" in ن and "الهواء" in ن
+    assert "كيف" in ن
+
+
 if __name__ == "__main__":
     الاختبارات = [قيمة for اسم, قيمة in sorted(globals().items()) if اسم.startswith("test_")]
     for اختبار in الاختبارات:
