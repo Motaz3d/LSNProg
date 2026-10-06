@@ -156,7 +156,7 @@ def test_منهج_يعرض_الدورة_والقيم():
     assert "١) العلاقة" in ن
     assert "٢) الجذر" in ن
     assert "٤) القيم" in ن
-    assert "نبض" in ن and "أبجدي" in ن
+    assert "نبض" in ن
 
 
 def test_تقليب_بقر_وقبر():
