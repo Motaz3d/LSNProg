@@ -105,6 +105,18 @@ def test_تعلم_القلب_وسبب_تسميته():
     assert "تقلب" in أسماء
 
 
+def test_الحركات_أوزان_ثنائية():
+    from lsnprog.alphabet import الحركات
+    assert الحركات["سكون"] == "0"
+    assert الحركات["فتحة"] == "1"
+
+
+def test_حركات_تميز_معنى_علم():
+    from lsnprog.neural import عرض_حركات_علم
+    ن = عرض_حركات_علم()
+    assert "عِلْم" in ن and "عَلَم" in ن and "عَلَّمَ" in ن
+
+
 if __name__ == "__main__":
     الاختبارات = [قيمة for اسم, قيمة in sorted(globals().items()) if اسم.startswith("test_")]
     for اختبار in الاختبارات:
