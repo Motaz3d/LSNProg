@@ -363,3 +363,31 @@ def عرض_العصبون(جذر, عدد=8):
         معنى = lexicon.الجذور.get(ب, "")
         أسطر.append(f"  ⇄ {ب} (وزن {و})" + (f" — {معنى}" if معنى else ""))
     return "\n".join(أسطر)
+
+
+def بناء_الخريطة_العصبية(حفظ=True):
+    """المهمة الأولى: بناء الخريطة الترابطية المنطقية العصبية (كل الجذور مترابطة) وحفظها."""
+    تردد, روابط = شبكة_قرآنية()
+    خريطة = {"العقد": dict(تردد), "الروابط": {}}
+    for ج, جيران in روابط.items():
+        خريطة["الروابط"][ج] = dict(جيران.most_common(15))
+    if حفظ:
+        import os
+        مسار = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+        os.makedirs(مسار, exist_ok=True)
+        ملف = os.path.join(مسار, "الخريطة_العصبية.json")
+        with open(ملف, "w", encoding="utf-8") as f:
+            json.dump(خريطة, f, ensure_ascii=False)
+        عدد_الروابط = sum(len(خريطة["الروابط"][ج]) for ج in خريطة["الروابط"])
+        return {"عدد_العصبونات": len(تردد), "عدد_الروابط": عدد_الروابط, "حُفظ_في": ملف}
+    return خريطة
+
+
+def تحميل_الخريطة():
+    """يحمّل الخريطة العصبية المحفوظة (أو يبنيها إن لم توجد)."""
+    import os
+    ملف = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "الخريطة_العصبية.json")
+    if os.path.exists(ملف):
+        with open(ملف, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return بناء_الخريطة_العصبية(حفظ=False)
